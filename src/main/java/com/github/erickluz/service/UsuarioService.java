@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.github.erickluz.domain.Perfil;
 import com.github.erickluz.domain.Usuario;
 import com.github.erickluz.dto.UsuarioDTO;
 import com.github.erickluz.exception.AuthorizationException;
@@ -40,7 +39,7 @@ public class UsuarioService {
 		if (usuario.getSenha() != null) {
 			usuario.setSenha(usuario.getSenha());	
 		}
-		usuario.addPerfil(Perfil.ADMIN);
+//		usuario.addPerfil(Perfil.ADMIN);
 		dao.persist(usuario);
 		usuario.setId((Long) dao.getEntityManager().getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(usuario));
 		return usuario;
@@ -56,7 +55,7 @@ public class UsuarioService {
 			usuarioEntity.setSenha(usuario.getSenha());
 			usuarioEntity.setRg(usuario.getRg());
 			usuarioEntity.setSobrenome(usuario.getSobrenome());
-			usuarioEntity.setTelefones(usuario.getTelefones());
+//			usuarioEntity.setTelefones(usuario.getTelefones());
 			usuarioEntity.setUrlFotoPerfil(usuario.getUrlFotoPerfil());
 
 			return usuarioEntity;

@@ -5,22 +5,36 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import com.github.erickluz.domain.Comanda;
 import com.github.erickluz.domain.StatusComanda;
+import com.github.erickluz.dto.ComandaItensDTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import io.quarkus.panache.common.Parameters;
 
 @ApplicationScoped
 public class ComandaRepository implements PanacheRepository<Comanda> {
-
+	
+	@Inject
+	private BaseDao dao;
+	
 	public Comanda buscarComandaPorId(Long idComanda) {
-		return find("FROM Comanda c "
-				+ " INNER FETCH JOIN ItensComanda ic ON ic.comanda.idComanda = c.idComanda "
-				+ " INNER FETCH JOIN Produto p ON p.idProduto = ic.produto.idProduto "
-				+ " WHERE c.idComanda = :id", Parameters.with("id", idComanda)).firstResult();
+		return findById(idComanda);
+	}
+	
+	public ComandaItensDTO buscarComandaCompletaPorId(Long idComanda) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("id", idComanda);
+		
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT new com.github.erickluz.dto.ComandaItensDTO(c, ic) FROM Comanda c ")
+			 .append("		LEFT JOIN FETCH ItensComanda ic ON ic.comanda.idComanda = c.idComanda ")
+			 .append("		LEFT JOIN FETCH Produto p ON p.idProduto = ic.produto.idProduto ")
+			 .append("		WHERE c.idComanda = :id");
+		
+		return (ComandaItensDTO) dao.find(query.toString(), params);
 	}
 
 	@Transactional

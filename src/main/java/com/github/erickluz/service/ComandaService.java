@@ -52,13 +52,11 @@ public class ComandaService {
 	}
 
 	public ComandaItensDTO buscarComandaPorId(Long id) throws ObjectNotFoundException {
-		Comanda comanda = dao.buscarComandaPorId(id);
+		ComandaItensDTO comanda = dao.buscarComandaCompletaPorId(id);
 		if (comanda == null) {
 			throw new ObjectNotFoundException("Comanda de id: " + id + " não encontrado");
 		}
-		List<ItensComanda> itensComanda = itensComandaService.buscarItensPorIdComanda(comanda.getIdComanda());
-		ComandaItensDTO comandaCompleta = new ComandaItensDTO(comanda, itensComanda);
-		return comandaCompleta;
+		return comanda;
 	}
 
 	public Comanda salvarComanda(ComandaItensDTO comanda) throws DataIntegrityException, ObjectNotFoundException, AuthorizationException {

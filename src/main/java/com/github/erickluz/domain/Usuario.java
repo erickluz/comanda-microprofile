@@ -2,29 +2,17 @@ package com.github.erickluz.domain;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="Usuario") 
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -37,28 +25,15 @@ public class Usuario implements Serializable {
 	private String cpf;
 	private String rg;
 	private Date dataNascimento;
-	@JsonIgnore
-	@ElementCollection
-	@CollectionTable(name="TELEFONE")
-	private List<String> telefones = new ArrayList<>();
 	@Column(unique = true)
 	private String email;
 	private String login;
 	private String senha;
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name="PERFIS")
-	private Set<Integer> perfis = new HashSet<>();
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(name = "USUARIO_ENDERECO",
-               joinColumns = @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario"),
-               inverseJoinColumns = @JoinColumn(name = "idEndereco", referencedColumnName = "idEndereco"))
-	public List<Endereco> enderecos = new ArrayList<>();
 	public TipoAutenticacao tipoAutenticacao;
 	public String urlFotoPerfil;
 	
 	public Usuario() {
-		addPerfil(Perfil.ADMIN);
+
 	}
 	
 	public void setIdUsuario(Long idUsuario) {
@@ -113,22 +88,6 @@ public class Usuario implements Serializable {
 		this.dataNascimento = dataNascimento;
 	}
 
-	public List<String> getTelefones() {
-		return telefones;
-	}
-
-	public void setTelefones(List<String> telefones) {
-		this.telefones = telefones;
-	}
-	
-	public List<Endereco> getEnderecos() {
-		return enderecos;
-	}
-
-	public void setEnderecos(List<Endereco> enderecos) {
-		this.enderecos = enderecos;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -153,14 +112,6 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 	}
 
-	public Set<Perfil> getPerfils() {
-		return perfis.stream().map(p -> Perfil.fromCodigo(p)).collect(Collectors.toSet());
-	}
-	
-	public void addPerfil(Perfil perfil) {
-		perfis.add(perfil.getCodigo());
-	}
-
 	public TipoAutenticacao getTipoAutenticacao() {
 		return tipoAutenticacao;
 	}
@@ -180,8 +131,8 @@ public class Usuario implements Serializable {
 	@Override
 	public String toString() {
 		return "Usuario [idUsuario=" + idUsuario + ", nome=" + nome + ", sobrenome=" + sobrenome + ", cpf=" + cpf
-				+ ", rg=" + rg + ", dataNascimento=" + dataNascimento + ", telefones=" + telefones + ", email=" + email
-				+ ", login=" + login + ", senha=" + senha + ", perfis=" + perfis + ", enderecos=" + enderecos
+				+ ", rg=" + rg + ", dataNascimento=" + dataNascimento + ", email=" + email
+				+ ", login=" + login + ", senha=" + senha 
 				+ ", tipoAutenticacao=" + tipoAutenticacao + ", urlFotoPerfil=" + urlFotoPerfil + "]";
 	}
 	

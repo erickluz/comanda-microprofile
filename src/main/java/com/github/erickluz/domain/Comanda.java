@@ -16,7 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table
+@Table(name = "Comanda")
 public class Comanda implements Serializable {
     public static final long serialVersionUID = 1L;
 
