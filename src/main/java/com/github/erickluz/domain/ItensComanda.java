@@ -3,6 +3,7 @@ package com.github.erickluz.domain;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,11 +27,11 @@ public class ItensComanda implements Serializable {
 
 	@JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "id_comanda")
+    @JoinColumn(name = "idComanda")
     public Comanda comanda;
 
-    @ManyToOne
-    @JoinColumn(name = "id_produto")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "idProduto")
     @JsonProperty("produto")
     public Produto produto;
 

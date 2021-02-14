@@ -30,4 +30,10 @@ public class BaseDao {
 		});
 		return (List<Object>) q.getResultList();
 	}
+	
+	public Object save(Object o) {
+		Object entity = em.merge(o);
+		em.flush();
+		return entity;
+	}
 }

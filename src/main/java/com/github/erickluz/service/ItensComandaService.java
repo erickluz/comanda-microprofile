@@ -21,6 +21,7 @@ public class ItensComandaService {
 
     public ItensComanda salvar(ItensComanda itemComanda) {
         dao.persist(itemComanda);
+        itemComanda.setIdItemComanda((long)dao.getEntityManager().getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(itemComanda));
         return itemComanda;
     }
 
@@ -47,5 +48,9 @@ public class ItensComandaService {
 
     public void excluirItensPorIdComanda(Long idComanda) {
         dao.delete("DELETE FROM ItensComanda ic WHERE ic.comanda.idComanda", idComanda);
+    }
+    
+    public ItensComanda buscarItensComandaComProduto(long id) {
+    	return dao.buscarItensComProduto(id);
     }
 }

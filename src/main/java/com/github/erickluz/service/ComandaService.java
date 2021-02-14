@@ -148,6 +148,12 @@ public class ComandaService {
 		dao.excluirComandaPorId(idComanda);
 	}
 
+	/**
+	 * Método criado para ADICIONAR itens a uma comanda que ja existe.
+	 * @param comanda
+	 * @throws DataIntegrityException
+	 * @throws ObjectNotFoundException
+	 */
 	public void acrescentarItensEmUmaComanda(ComandaItensDTO comanda) throws DataIntegrityException, ObjectNotFoundException {
 		verificarComanda(comanda);
 		Comanda entidadeComanda = dao.buscarComandaPorId(comanda.getIdComanda());
@@ -156,23 +162,27 @@ public class ComandaService {
 		}
 		BigDecimal valorTotal = BigDecimal.ZERO;
 		for (ItensComanda item : comanda.getItensComanda()) {
-			boolean itemNaComanda = false;
+			boolean isItemNaComanda = false;
 			List<ItensComanda> itensDaComanda = itensComandaService.buscarItensPorIdComanda(entidadeComanda.getIdComanda());
+			ItensComanda entidadeItemComanda;
 			for (ItensComanda itemEntidade : itensDaComanda) {
 				if (itemEntidade.getProduto().getIdProduto().equals(item.getProduto().getIdProduto())) {
 					itemEntidade.setQuantidade(itemEntidade.getQuantidade() + item.getQuantidade());
-					itensComandaService.salvar(itemEntidade);
-					itemNaComanda = true;
+					entidadeItemComanda = itensComandaService.salvar(itemEntidade);
+					valorTotal = valorTotal.add(entidadeItemComanda.getProduto().getPreco().multiply(BigDecimal.valueOf(entidadeItemComanda.getQuantidade().doubleValue())));
+					isItemNaComanda = true;
 					break;
 				}
 			}
-			if (!itemNaComanda) {
+			if (!isItemNaComanda) {
 				item.setComanda(entidadeComanda);
 				itensComandaService.salvar(item);
+				Produto produto = produtoService.buscar(item.getProduto().getIdProduto());
+				valorTotal = valorTotal.add(produto.getPreco().multiply(BigDecimal.valueOf(item.getQuantidade().doubleValue())));
 			}
-			valorTotal = valorTotal.add(item.getProduto().getPreco().multiply(BigDecimal.valueOf(item.getQuantidade().doubleValue())));
 		}
 		entidadeComanda.setValorTotal(valorTotal);
+		dao.persist(entidadeComanda);
 	}
 
 	public void fecharComanda(Long idComanda) throws DataIntegrityException, ObjectNotFoundException {
