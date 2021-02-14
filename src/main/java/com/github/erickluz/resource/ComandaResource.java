@@ -67,7 +67,7 @@ public class ComandaResource {
 	@GET
 	@Path(value = "/{id}")
 	public Response buscarComandaPorId(@PathParam("id") Long id) throws ObjectNotFoundException {
-		ComandaItensDTO comanda = service.buscarComandaPorId(id);
+		ComandaItensDTO comanda = service.buscarComandaCompletaPorId(id);
 		return (comanda != null) ? Response.ok(comanda).build() : Response.status(HttpResponseStatus.NOT_FOUND.code()).build();
 	}
 
